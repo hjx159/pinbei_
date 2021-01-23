@@ -1,4 +1,6 @@
+<!-- 搜索栏 -->
 <Search></Search>
+<!-- 轮播图 -->
 <view class="index_swiper">
   <swiper autoplay interval="2000" circular indicator-dots>
     <swiper-item wx:for="{{swiperImgs}}" wx:key="*this">
@@ -6,12 +8,15 @@
     </swiper-item>
   </swiper>
 </view>
+<!-- tab栏 -->
 <Tabs tabs="{{tabs}}" bindtabsItemChange="handleTabsItemChange">
+  <!-- 关键词 -->
   <view class="tips">
     <view wx:for="{{keywords}}" wx:key="id" class="{{item.isActive?'active':''}}" bindtap="handlekeywordsItemChange" data-index="{{index}}">
       {{item.value}}
     </view>
   </view>
+  <!-- 帖子列表 -->
   <view class="posts">
     <view class="posts_item" wx:for="{{postsList}}" wx:key="post_id">
       <navigator url="/pages/post/post?post_id='{{item.post_id}}'&isComment=false">
