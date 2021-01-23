@@ -1,0 +1,111 @@
+page {
+  background-color: #eee;
+}
+/* 885 * 276 */
+.index_swiper swiper {
+  width: 750rpx;
+  height: calc(750rpx * 276 / 885);
+}
+.index_swiper swiper swiper-item image {
+  width: 100%;
+}
+.tips {
+  display: flex;
+}
+.tips view {
+  background-color: #fff;
+  padding: 0 10rpx;
+  margin: 10rpx;
+  border-radius: 10rpx;
+}
+.tips .active {
+  background-color: var(--themeColor);
+  color: #fff;
+}
+.posts .posts_item {
+  position: relative;
+  width: 750rpx;
+  height: 200rpx;
+  padding: 10rpx;
+  background-color: #fff;
+  margin-bottom: 10rpx;
+}
+.posts .posts_item navigator .post_main {
+  width: 750rpx;
+  height: 115rpx;
+}
+.posts .posts_item navigator .post_main .post_title {
+  font-size: 34rpx;
+}
+.posts .posts_item navigator .post_main .user_info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  bottom: 70rpx;
+  left: 10rpx;
+}
+.posts .posts_item navigator .post_main .user_info image {
+  flex: 1;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 20rpx;
+}
+.posts .posts_item navigator .post_main .user_info .user_name {
+  flex: 1;
+  font-size: 20rpx;
+  margin-left: 10rpx;
+}
+.posts .posts_item navigator .post_main .post_time {
+  position: absolute;
+  bottom: 100rpx;
+  right: 10rpx;
+  font-size: 20rpx;
+}
+.posts .posts_item navigator .post_main .post_position {
+  position: absolute;
+  bottom: 70rpx;
+  right: 10rpx;
+  font-size: 20rpx;
+}
+.posts .posts_item .post_comments {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  border-top: 1rpx solid #ddd;
+  padding: 10rpx;
+}
+.posts .posts_item .post_comments .icon-empty {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.posts .posts_item .post_comments .icon-dianzan-aixinshixin {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: red;
+}
+.posts .posts_item .post_comments .icon-pinglun {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.posts .posts_item .post_comments .icon-huaban19 {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.posts .posts_item .post_comments .icon-huaban19 button {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}

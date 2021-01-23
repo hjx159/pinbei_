@@ -1,0 +1,43 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/send-post/send-post",
+    "pages/user/user",
+    "pages/search/search",
+    "pages/post/post"
+  ],
+  "window":{
+    "navigationBarBackgroundColor": "#1296db",
+    "navigationBarTitleText": "拼呗",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#707070",
+    "selectedColor": "#1296db",
+    "backgroundColor": "#fafafa",
+    "position": "bottom",
+    "borderStyle": "black",
+    "list": [
+      {
+      "pagePath": "pages/index/index",
+      "text": "首页",
+      "iconPath": "icons/tiezi.png",
+      "selectedIconPath": "icons/tiezi_.png"
+      },
+      {
+      "pagePath": "pages/send-post/send-post",
+      "text": "发帖",
+      "iconPath": "icons/add.png",
+      "selectedIconPath": "icons/add_.png"
+      },
+      {
+      "pagePath": "pages/user/user",
+      "text": "我的",
+      "iconPath": "icons/my.png",
+      "selectedIconPath": "icons/my_.png"
+      }
+  ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

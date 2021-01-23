@@ -1,0 +1,14 @@
+.search {
+    height: 90rpx;
+    padding: 10rpx;
+    background-color: var(--themeColor);
+  }
+  .search navigator {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    color: #ccc;
+    background-color: #fff;
+    border-radius: 15rpx;
+  }

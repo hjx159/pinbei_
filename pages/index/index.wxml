@@ -1,0 +1,43 @@
+<Search></Search>
+<view class="index_swiper">
+  <swiper autoplay interval="2000" circular indicator-dots>
+    <swiper-item wx:for="{{swiperImgs}}" wx:key="*this">
+      <image src="{{item}}" mode="widthFix"></image>
+    </swiper-item>
+  </swiper>
+</view>
+<Tabs tabs="{{tabs}}" bindtabsItemChange="handleTabsItemChange">
+  <view class="tips">
+    <view wx:for="{{keywords}}" wx:key="id" class="{{item.isActive?'active':''}}" bindtap="handlekeywordsItemChange" data-index="{{index}}">
+      {{item.value}}
+    </view>
+  </view>
+  <view class="posts">
+    <view class="posts_item" wx:for="{{postsList}}" wx:key="post_id">
+      <navigator url="/pages/post/post?post_id='{{item.post_id}}'&isComment=false">
+        <view class="post_main">
+          <view class="post_title">{{item.post_title}}</view>
+          <view class="user_info">
+            <image src="{{item.user_icon}}" mode="widthFix"></image>
+            <view class="user_name">{{item.user_name}}</view>
+          </view>
+          <view class="post_time iconfont icon-time">{{item.post_time}}</view>
+          <view class="post_position iconfont icon-diliweizhi">{{item.post_position}}</view>
+        </view>
+      </navigator>
+      <view class="post_comments">
+        <view class="iconfont {{item.isLike?'icon-dianzan-aixinshixin':'icon-empty'}}" bindtap="handleTapLike" data-index="{{index}}">
+          <text decode>&nbsp;</text>
+          {{item.comments.likes_num}}
+        </view>
+        <view class="iconfont icon-pinglun" bindtap="handleTapComment" data-index="{{index}}">
+          <text decode>&nbsp;</text>
+          {{item.comments.comments_num}}
+        </view>
+        <view class="iconfont icon-huaban19">
+          <button open-type="share"></button>
+        </view>
+      </view>
+    </view>
+  </view>
+</Tabs>
