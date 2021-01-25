@@ -1,11 +1,12 @@
 let timeLimit = 108000000//时间限度为30个小时
-let numOfPostsOneTime = 4//上拉加载，每次10条
+let numOfPostsOneTime = 5//上拉加载，每次10条
 let totalNum = -1//帖子总数（用于分页）
 let index = 0
 let keywords=[]
 const _ = wx.cloud.database().command
 let isTab = false
 let isEnd = false
+// let booL = false
 Page({
   data: {
     // tab栏数据
@@ -79,6 +80,7 @@ Page({
 
   // tab栏点击
   handlekeywordsItemChange(e) {
+    // booL=true
     this.setData({
       postsList:[]
     })
@@ -150,6 +152,12 @@ Page({
 
   // 下拉刷新事件
   onPullDownRefresh() {
+    
+    const time = Date.now()
+    this.setData({
+      currentTime:time
+    })
+
     this.setData({
       postsList:[]
     })
@@ -194,6 +202,7 @@ Page({
 
   // 页面上划 滚动条触底事件
   onReachBottom() {
+    console.log("isTab:",isTab,";isEnd:",isEnd)
     if(!isTab&&!isEnd){
       console.log("'全部'页滑到底部，数据更新!")
       this.getPagingData()
@@ -208,6 +217,7 @@ Page({
   /* async getPostsList() {
 
   }, */
+  
   getPagingData(){
     let len = this.data.postsList.length
     if(totalNum==len){
@@ -284,14 +294,17 @@ Page({
       success:res=>{
         wx.hideLoading()
         console.log("数据库查询成功",res)
-        /*
-        这段代码可以防止用户脑溢血疯狂点击某个标签，如“奶茶”
+        
+        /* 这段代码可以防止用户脑溢血疯狂点击某个标签，如“奶茶”
         避免此时帖子列表加载重复
         但是，这段代码会使得某个标签的帖子不能够分页加载
-        所以还是注释掉了 
-        this.setData({
-          postsList:[]
-        }) */
+        所以还是注释掉了  */
+        /* if(booL){
+          this.setData({
+            postsList:[]
+          })
+          booL=false
+      } */
         this.setData({
           postsList:this.data.postsList.concat(res.result.data)
         })
@@ -332,7 +345,56 @@ Page({
     this.getPagingData()
   },
   onShow(){
-    
+    /* wx.cloud.database().collection("posts").add({
+      data:{
+        // 帖子编号（唯一）
+        post_id: new Date().getTime(),
+        post_title: "奶茶999！！",
+        post_content: "快来吧!",
+        // 0——吃 1——玩 2——买
+        post_category: 0,
+        post_tags: ["奶茶", "奶茶拼单"],
+        // 传一个Date.now()类型的数 或者数组([年,月,日,时,分,秒])
+        // post_time: [2021, 1, 23, 11, 42, 51],
+       // post_time: "1分钟前",
+        publish_time:new Date().getTime(),
+        // 微信内置api提供
+        post_position: "距您500m",
+        // 用户编号（唯一）
+        user_id: 20210118,
+        user_name: "Jay",
+        // 用户头像路径
+        user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132",
+        // 图片外网路径数组
+        pics_url: [
+          "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132"
+        ],
+        // 是否结束拼单（需求满足/时限到期）
+        isCompleted: false,
+        // 是否已点赞
+        isLike: false,
+        // 评论
+        comments: {
+          likes_num: 0,
+          comments_num: 0,
+          comments_list: [
+            {
+              comment_id: 1,
+              comment_content: "dd",
+              user_name: "XXX",
+              user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132"
+            }
+          ]
+        }
+      },
+      success:res=>{
+        console.log("成功插入云数据库",res)
+      },
+      fail:err=>{
+        console.log("失败插入云数据库",err)
+      }
+    }) */
+
     /* let { keywords } = this.data;
     keywords.forEach(v => v.isActive = (v.id === 0) ? true : false);
     this.setData({
