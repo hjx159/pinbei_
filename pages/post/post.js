@@ -1,20 +1,37 @@
 // pages/post/post.js
 Page({
 
-  /**
-   * 页面的初始数据
-   */
+  // 页面的初始数据
   data: {
-
+    postInfo:{}
   },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
+  // 生命周期函数--监听页面加载
   onLoad: function (options) {
-
+    //获取帖子信息
+    wx.cloud.callFunction({
+      name:"getPostInfo",
+      data:{
+        post_id:1611457831025 //改为当前帖子的post_id
+      },success:res=>{
+        console.log("返回的帖子信息是",res.result.data[0])
+        this.setData({
+          postInfo:res.result.data[0]
+        })
+      },fail:err=>{
+        console.log("返回帖子信息失败",err)
+      }
+    })
+    //后续操作...
   },
-
+  //获取用户open_id按钮
+  tapHandler(){
+    wx.cloud.callFunction({
+      name:"getOpenid",
+      success:res=>{
+        console.log("返回的openid为：",res.result.openid)
+      }
+    })
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

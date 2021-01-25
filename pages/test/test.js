@@ -1,0 +1,10 @@
+Page({
+  data:{
+    time:''
+  },
+  onShow(){
+    this.setData({
+      time:Date.now()
+    })
+  }
+})

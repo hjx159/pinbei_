@@ -1,3 +1,11 @@
+let timeLimit = 108000000//时间限度为30个小时
+let numOfPostsOneTime = 4//上拉加载，每次10条
+let totalNum = -1//帖子总数（用于分页）
+let index = 0
+let keywords=[]
+const _ = wx.cloud.database().command
+let isTab = false
+let isEnd = false
 Page({
   data: {
     // tab栏数据
@@ -48,88 +56,8 @@ Page({
       }
     ],
     // 满足条件的帖子（数组）
-    postsList: [
-      {
-        // 帖子编号（唯一）
-        post_id: 123,
-        post_title: "CoCo打五折，买一送一！！",
-        post_content: "我想喝奶茶了，有想拼单的评论或者直接私聊我!",
-        // 0——吃 1——玩 2——买
-        post_category: 0,
-        post_tags: ["CoCo", "奶茶拼单"],
-        // 传一个Date.now()类型的数 或者数组([年,月,日,时,分,秒])
-        // post_time: [2021, 1, 23, 11, 42, 51],
-        post_time: "10分钟前",
-        // 微信内置api提供
-        post_position: "距您200m",
-        // 用户编号（唯一）
-        user_id: 20210123,
-        user_name: "XWH",
-        // 用户头像路径
-        user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132",
-        // 图片外网路径数组
-        pics_url: [
-          "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132"
-        ],
-        // 是否结束拼单（需求满足/时限到期）
-        isCompleted: false,
-        // 是否已点赞
-        isLike: false,
-        // 评论
-        comments: {
-          likes_num: 1,
-          comments_num: 1,
-          comments_list: [
-            {
-              comment_id: 1,
-              comment_content: "dd",
-              user_name: "XWH",
-              user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132"
-            }
-          ]
-        }
-      },
-      {
-        // 帖子编号（唯一）
-        post_id: 124,
-        post_title: "喜茶买二送一！！",
-        post_content: "我想喝奶茶了，有想拼单的评论或者直接私聊我!",
-        // 0——吃 1——玩 2——买
-        post_category: 0,
-        post_tags: ["喜茶", "奶茶拼单"],
-        // 传一个Date.now()类型的数 或者数组([年,月,日,时,分,秒])
-        // post_time: [2021, 1, 23, 11, 42, 51],
-        post_time: "1分钟前",
-        // 微信内置api提供
-        post_position: "距您500m",
-        // 用户编号（唯一）
-        user_id: 20210129,
-        user_name: "XXX",
-        // 用户头像路径
-        user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132",
-        // 图片外网路径数组
-        pics_url: [
-          "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132"
-        ],
-        // 是否结束拼单（需求满足/时限到期）
-        isCompleted: false,
-        // 是否已点赞
-        isLike: false,
-        // 评论
-        comments: {
-          likes_num: 0,
-          comments_num: 0,
-          comments_list: [
-            {
-              comment_id: 1,
-              comment_content: "dd",
-              user_name: "XXX",
-              user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132"
-            }
-          ]
-        }
-      }
-    ]
+    postsList: [],
+    currentTime:0
   },
 
   onShow() {
@@ -151,12 +79,48 @@ Page({
 
   // tab栏点击
   handlekeywordsItemChange(e) {
-    const { index } = e.currentTarget.dataset;
-    let { keywords } = this.data;
-    keywords.forEach(v => v.isActive = (v.id === index) ? true : false);
     this.setData({
-      keywords
+      postsList:[]
     })
+
+    index = e.currentTarget.dataset.index;
+
+    if(index===0){
+      isTab=false
+      console.log(isTab)
+    }else{
+      isTab=true
+      console.log(isTab)
+    }
+
+    keywords = this.data.keywords;
+    keywords.forEach(v => v.isActive = ((v.id === index) ? true : false));
+    this.setData({
+      keywords:keywords
+    })
+
+    const time = Date.now()
+    this.setData({
+      currentTime:time
+    })
+    const time_ = this.data.currentTime - timeLimit
+
+    
+    wx.cloud.callFunction({
+      name:"countPosts",
+      data:{
+        timelimit:time_,
+        key:keywords[index].value
+      },success:res=>{
+        totalNum=res.result.total
+        console.log("totalNum计算成功,当前tab的帖子总数是:",totalNum)
+        this.getPagingDataForTab()
+      },fail:err=>{
+        console.log("totalNum计算失败.",err)
+      }
+    })
+    
+    
   },
 
   // 点击点赞
@@ -186,16 +150,194 @@ Page({
 
   // 下拉刷新事件
   onPullDownRefresh() {
+    this.setData({
+      postsList:[]
+    })
 
+    keywords = this.data.keywords;
+    keywords.forEach(v => v.isActive = ((v.id === 0) ? true : false));
+    this.setData({
+      keywords:keywords
+    })
+
+    //wx.startPullDownRefresh()
+    // if(index===0){
+      isTab=false
+      this.getPagingData()
+    /* }else{//有点问题
+      isTab=true
+      const time = Date.now()
+      this.setData({
+        currentTime:time
+      })
+      const time_ = this.data.currentTime - timeLimit
+
+      
+      wx.cloud.callFunction({
+        name:"countPosts",
+        data:{
+          timelimit:time_,
+          key:keywords[index].value
+        },success:res=>{
+          totalNum=res.result.total
+          console.log("totalNum计算成功,当前tab的帖子总数是:",totalNum)
+          this.getPagingDataForTab()
+        },fail:err=>{
+          console.log("totalNum计算失败.",err)
+        }
+      })
+      isTab=false
+      this.getPagingDataForTab()
+    } */
+    wx.stopPullDownRefresh()
   },
 
   // 页面上划 滚动条触底事件
   onReachBottom() {
-
+    if(!isTab&&!isEnd){
+      console.log("'全部'页滑到底部，数据更新!")
+      this.getPagingData()
+    }else if(isTab&&!isEnd){
+      console.log("'特定'页滑到底部，数据更新!")
+      this.getPagingDataForTab()
+    }
+    isEnd=false
   },
 
   // 获取商品列表数据
-  async getPostsList() {
+  /* async getPostsList() {
 
+  }, */
+  getPagingData(){
+    let len = this.data.postsList.length
+    if(totalNum==len){
+      wx.showToast({
+        title: '数据加载完毕',
+      })
+      isEnd=true
+      return
+    }
+    console.log(totalNum,len)
+    wx.showLoading({
+      title: '拼命加载中！！',
+    })
+
+    const time = Date.now()
+    console.log(time)
+    this.setData({
+      currentTime:time
+    })
+    const time_ = this.data.currentTime - timeLimit
+
+    wx.cloud.callFunction({
+      name:"getPostList",
+      data:{
+        numOfPostsOneTime:numOfPostsOneTime,
+        len:len,
+        action:"shouye",
+        key:"全部",
+        timelimit:time_
+      },
+      success:res=>{
+        wx.hideLoading()
+        this.setData({
+          postsList:this.data.postsList.concat(res.result.data)
+        })
+      },
+      fail:err=>{
+        console.log("数据库查询失败",err)
+        wx.hideLoading()
+        wx.showToast({
+          title: '加载失败',
+        })
+      }
+    })
+  },
+  getPagingDataForTab(){
+    const time = Date.now()
+    this.setData({
+      currentTime:time
+    })
+    const time_ = this.data.currentTime - timeLimit
+
+    let len = this.data.postsList.length
+    
+    if(totalNum==len){
+      wx.showToast({
+        title: '数据加载完毕',
+      })
+      isEnd=true
+      return
+    }
+    wx.showLoading({
+      title: '拼命加载中！！',
+    })
+    wx.cloud.callFunction({
+      name:"getPostList",
+      data:{
+        numOfPostsOneTime:numOfPostsOneTime,
+        len:len,
+        action:"shouye",
+        key:keywords[index].value,
+        timelimit:time_
+      },
+      success:res=>{
+        wx.hideLoading()
+        console.log("数据库查询成功",res)
+        /*
+        这段代码可以防止用户脑溢血疯狂点击某个标签，如“奶茶”
+        避免此时帖子列表加载重复
+        但是，这段代码会使得某个标签的帖子不能够分页加载
+        所以还是注释掉了 
+        this.setData({
+          postsList:[]
+        }) */
+        this.setData({
+          postsList:this.data.postsList.concat(res.result.data)
+        })
+      },
+      fail:err=>{
+        console.log("数据库查询失败",err)
+        wx.hideLoading()
+        wx.showToast({
+          title: '加载失败',
+        })
+      }
+    })
+  },
+  onLoad(){
+    const time = Date.now()
+    this.setData({
+      currentTime:time
+    })
+    const time_ = this.data.currentTime - timeLimit
+
+    wx.cloud.callFunction({
+      name:"countPosts",
+      data:{
+        timelimit:time_,
+        key:"全部"
+      },success:res=>{
+        console.log("totalNum计算成功",totalNum)
+        totalNum=res.result.total
+      },fail:err=>{
+        console.log("totalNum计算失败.",err)
+      }
+    })
+    let { keywords } = this.data;
+    keywords.forEach(v => v.isActive = (v.id === 0) ? true : false);
+    this.setData({
+      keywords
+    })
+    this.getPagingData()
+  },
+  onShow(){
+    
+    /* let { keywords } = this.data;
+    keywords.forEach(v => v.isActive = (v.id === 0) ? true : false);
+    this.setData({
+      keywords
+    })
+    this.getPagingData() */
   }
 })

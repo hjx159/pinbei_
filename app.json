@@ -4,7 +4,8 @@
     "pages/send-post/send-post",
     "pages/user/user",
     "pages/search/search",
-    "pages/post/post"
+    "pages/post/post",
+    "pages/test/test"
   ],
   "window":{
     "navigationBarBackgroundColor": "#1296db",

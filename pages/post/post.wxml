@@ -1,2 +1,1 @@
-<!--pages/post/post.wxml-->
-<text>pages/post/post.wxml</text>
+<button bindtap="tapHandler" type="primary">获取用户open_id</button>
