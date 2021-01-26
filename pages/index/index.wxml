@@ -33,7 +33,12 @@
           </view>
           <!-- <view class="post_time iconfont icon-time">{{item.post_time}}</view> -->
           <view class="post_time iconfont icon-time">{{wxsTest.timeMinus(currentTime,item.publish_time)}}</view>
-          <view class="post_position iconfont icon-diliweizhi">{{item.post_position}}</view>
+          <!-- <view class="post_position iconfont icon-diliweizhi">{{item.post_position}}</view> -->
+
+
+          <view class="post_position iconfont icon-diliweizhi">{{calculateDistance.calDistance(MyInfo.currentPosition.latitude,MyInfo.currentPosition.longitude,item.post_position.latitude,item.post_position.longitude)}}</view>
+        
+        
         </view>
       </navigator>
       <view class="post_comments">
@@ -67,5 +72,45 @@
   }
   module.exports={
     timeMinus:timeMinus
+  }
+</wxs>
+
+<wxs module="calculateDistance">
+  function calDistance(lat1,lng1,lat2,lng2){
+    var radLat1 = lat1 * Math.PI/180.0;
+    var radLat2 = lat2 * Math.PI/180.0;
+    var a = radLat1 - radLat2;
+    var b = lng1* Math.PI/180.0 - lng2* Math.PI/180.0;
+    var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+    s=s*6378.137;
+    s = Math.round(s * 10000) / 10000;
+    s = s.toFixed(2) + '公里' //保留两位小数
+    // console.log('经纬度计算的距离:' + s)
+    return s
+
+    /* var QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
+    
+    var _that = this
+    var demo = new QQMapWX({
+      key:'UR5BZ-IIGKU-LPYVQ-4HFNJ-VSSR2-PFF6Z'
+    });
+    demo.calculateDistance({
+      mode:"walking",//默认也是walking
+      from:userPosition,
+      to:postPosition,
+      success: function(res) {
+                 let hw = res.result.elements[0].distance //拿到距离(米)
+                 if (hw && hw !== -1) { //拿到正确的值
+                     //转换成公里
+                     hw = (hw / 2 / 500).toFixed(2) + '公里'
+                 } else {
+                     hw = "距离太近或请刷新重试"
+                 }
+                 return hw
+      }
+    }) */
+  }
+  module.exports={
+    calDistance:calDistance
   }
 </wxs>

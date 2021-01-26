@@ -10,9 +10,20 @@ const _ = db.command
 // 云函数入口函数
 exports.main = async (event, context) => {
   if(event.action==="shouye"&&event.key==="全部"){
-    return await db.collection("posts").orderBy('publish_time','desc').where({
+    return await db.collection("test1")/* .orderBy('publish_time','desc') */
+    /* .where({
       publish_time:_.gt(event.timelimit)  //帖子发布时间晚于timelimit的才会显示
-    }).skip(event.len).limit(event.numOfPostsOneTime).get({
+    }) */
+    .where({
+      publish_time:_.gt(event.timelimit),  //帖子发布时间晚于timelimit的才会显示
+      position:_.geoNear({
+        geometry:db.Geo.Point(event.longitude,event.latitude),
+        maxDistance:event.maxDistance
+      })
+    })
+    .skip(event.len)
+    .limit(event.numOfPostsOneTime)
+    .get({
       success:res=>{
         console.log("查询数据库成功",res)
       },
@@ -22,10 +33,24 @@ exports.main = async (event, context) => {
     })
   }
   else if(event.action==="shouye"&&event.key!=="全部"){
-    return await db.collection("posts").orderBy('publish_time','desc').where({
+    return await db.collection("test1")/* .orderBy('publish_time','desc') */
+    /* .where({
       publish_time:_.gt(event.timelimit),  //帖子发布时间晚于timelimit的才会显示
+    }) */
+    .where({
+      post_tags:_.elemMatch(_.eq(event.key)),
+      publish_time:_.gt(event.timelimit), //帖子发布时间晚于timelimit的才会显示
+      position:_.geoNear({
+        geometry:db.Geo.Point(event.longitude,event.latitude),
+        maxDistance:event.maxDistance
+      })
+    })
+    /* .where({
       post_tags:_.elemMatch(_.eq(event.key))
-    }).skip(event.len).limit(event.numOfPostsOneTime).get({
+    }) */
+    .skip(event.len)
+    .limit(event.numOfPostsOneTime)
+    .get({
       success:res=>{
         console.log("查询数据库成功",res)
       },
@@ -37,7 +62,7 @@ exports.main = async (event, context) => {
   /* if(event.action==="shouye"&&event.key==="全部"){
     return await db.collection("posts").orderBy('publish_time','desc').where({
       publish_time:_.gt(event.timelimit)  //帖子发布时间晚于timelimit的才会显示
-    }).get({
+    }).skip(event.len).limit(event.numOfPostsOneTime).get({
       success:res=>{
         console.log("查询数据库成功",res)
       },
@@ -50,16 +75,13 @@ exports.main = async (event, context) => {
     return await db.collection("posts").orderBy('publish_time','desc').where({
       publish_time:_.gt(event.timelimit),  //帖子发布时间晚于timelimit的才会显示
       post_tags:_.elemMatch(_.eq(event.key))
-    }).get({
+    }).skip(event.len).limit(event.numOfPostsOneTime).get({
       success:res=>{
-        console.log("查询数据库成功",res.data)
+        console.log("查询数据库成功",res)
       },
       fail:res=>{
         console.log("查询数据库失败",res)
       }
     })
-  } */
-  /* else if(event.action==="paging"){
-    return await db.collection("posts")
   } */
 }

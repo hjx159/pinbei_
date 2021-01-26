@@ -1,7 +1,6 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/test/test",
     "pages/send-post/send-post",
     "pages/user/user",
     "pages/search/search",
@@ -10,8 +9,14 @@
     "pages/myInfo/myInfo",
     "pages/myPosts/myPosts",
     "pages/setTime/setTime",
-    "pages/myComments/myComments"
+    "pages/myComments/myComments",
+    "pages/test/test"
   ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "你的位置信息将用于小程序位置接口的效果展示"
+    }
+  },
   "window": {
     "navigationBarBackgroundColor": "#1296db",
     "navigationBarTitleText": "拼呗",

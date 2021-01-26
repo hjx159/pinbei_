@@ -3,11 +3,16 @@ let numOfPostsOneTime = 5//上拉加载，每次5条
 let totalNum = -1//帖子总数（用于分页）
 let index = 0
 let keywords=[]
-const _ = wx.cloud.database().command
+// const _ = wx.cloud.database().command
 let isTab = false
 let isEnd = false
 
-// posts
+let max = 5000//4km
+// let latitude = 0
+// let longitude =0
+const db = wx.cloud.database()
+const _ = db.command
+// posts countPosts
 Page({
   data: {
     // tab栏数据
@@ -65,7 +70,10 @@ Page({
       // 用户头像路径
       user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132",
       // 当前地理位置  
-      currentPosition: ""
+      currentPosition: {
+        latitude:0, //纬度
+        longitude:0 //经度
+      }
     },
     // 满足条件的帖子（数组）
     postsList: [],
@@ -73,6 +81,36 @@ Page({
   },
 
   onLoad(){
+    console.log(new Date().getTime())
+    this.setData({
+      MyInfo:{
+        currentPosition:{
+          latitude:26.428351,
+          longitude:112.856476
+        }
+      }
+    })
+    console.log("当前用户的纬度、经度是：",this.data.MyInfo.currentPosition)
+    //获取用户的地理位置
+    /* wx.getLocation({
+      type: 'gcj02',
+      success:res=> {
+          this.setData({
+            MyInfo:{
+              currentPosition:{
+                latitude:res.latitude,
+                longitude:res.longitude
+              }
+            }
+          })
+          console.log("当前用户的纬度、经度是：",this.data.MyInfo.currentPosition)
+      },
+      fail:err=>{
+        console.log("获取用户地理位置失败",err)
+      }
+  }) */
+
+
     const time = Date.now()
     this.setData({
       currentTime:time
@@ -82,13 +120,17 @@ Page({
     wx.cloud.callFunction({
       name:"countPosts",
       data:{
+        longitude:this.data.MyInfo.currentPosition.longitude,
+        latitude:this.data.MyInfo.currentPosition.latitude,
+        maxDistance:max,
         timelimit:time_,
         key:"全部"
       },success:res=>{
-        // console.log("totalNum计算成功",totalNum)
+        console.log(res)
         totalNum=res.result.total
+        console.log("countPosts云函数返回：totalNum计算成功",totalNum)
       },fail:err=>{
-        console.log("totalNum计算失败.",err)
+        console.log("countPosts云函数返回：totalNum计算失败.",err)
       }
     })
     let { keywords } = this.data;
@@ -159,14 +201,18 @@ Page({
     wx.cloud.callFunction({
       name:"countPosts",
       data:{
+        longitude:this.data.MyInfo.currentPosition.longitude,
+        latitude:this.data.MyInfo.currentPosition.latitude,
+        maxDistance:max,
         timelimit:time_,
         key:keywords[index].value
       },success:res=>{
+        console.log(res)
         totalNum=res.result.total
-        console.log("totalNum计算成功,当前tab的帖子总数是:",totalNum)
+        console.log("countPosts云函数返回：totalNum计算成功,当前tab的帖子总数是:",totalNum)
         this.getPagingDataForTab()
       },fail:err=>{
-        console.log("totalNum计算失败.",err)
+        console.log("countPosts云函数返回：totalNum计算失败.",err)
       }
     })
   },
@@ -203,6 +249,7 @@ Page({
 
   // 下拉刷新事件
   onPullDownRefresh() {
+    
     const time = Date.now()
     this.setData({
       currentTime:time
@@ -269,9 +316,10 @@ Page({
         title: '数据加载完毕',
       })
       isEnd=true
+      console.log("当前的totalNum和len分别是：",totalNum,len,"，下拉刷新返回！")
       return
     }
-    // console.log(totalNum,len)
+    console.log(totalNum,len)
     wx.showLoading({
       title: '拼命加载中！！',
     })
@@ -283,9 +331,22 @@ Page({
     })
     const time_ = this.data.currentTime - timeLimit
 
+    /* while(isEnded){
+      wx.cloud.database().collection("list_").where({
+        isCompleted:false
+      }).update({
+        data:{
+          distance:
+        }
+      })
+    } */
+
     wx.cloud.callFunction({
       name:"getPostList",
       data:{
+        longitude:this.data.MyInfo.currentPosition.longitude,
+        latitude:this.data.MyInfo.currentPosition.latitude,
+        maxDistance:max,
         numOfPostsOneTime:numOfPostsOneTime,
         len:len,
         action:"shouye",
@@ -329,6 +390,9 @@ Page({
     wx.cloud.callFunction({
       name:"getPostList",
       data:{
+        longitude:this.data.MyInfo.currentPosition.longitude,
+        latitude:this.data.MyInfo.currentPosition.latitude,
+        maxDistance:max,
         numOfPostsOneTime:numOfPostsOneTime,
         len:len,
         action:"shouye",
