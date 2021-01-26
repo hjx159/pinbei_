@@ -1,1 +1,1 @@
-<view>{{time}}</view>
+<button bindtap="getUserPosition">计算距离</button>

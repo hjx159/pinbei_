@@ -1,11 +1,12 @@
 {
   "pages":[
+    "pages/test/test",
     "pages/index/index",
     "pages/send-post/send-post",
     "pages/user/user",
     "pages/search/search",
-    "pages/post/post",
-    "pages/test/test"
+    "pages/post/post"
+    
   ],
   "window":{
     "navigationBarBackgroundColor": "#1296db",
