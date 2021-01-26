@@ -1,6 +1,5 @@
 {
   "usingComponents": {
-    "Search": "../../components/Search/Search",
     "Tabs": "../../components/Tabs/Tabs"
   },
   "navigationBarTitleText": "拼呗首页",

@@ -1,2 +1,54 @@
-<!--pages/send-post/send-post.wxml-->
-<text>pages/send-post/send-post.wxml</text>
+<view class="user_info_row">
+    <view class="user_info">
+        <image src="{{MyInfo.user_icon}}" mode="widthFix"></image>
+        <view class="user_name">{{MyInfo.user_name}}</view>
+    </view>
+</view>
+<view class="post_main">
+    <view class="post_text">
+        <view class="post_title_wrap">
+            <textarea value="{{titleTextVal}}" placeholder="活动标题..." auto-focus="true" bindinput="handleTitleInput"></textarea>
+        </view>
+        <view class="post_content_wrap">
+            <textarea value="{{contentTextVal}}" placeholder="说点什么吧..." maxlength="1024" bindinput="handleContentInput"></textarea>
+        </view>
+    </view>
+    <view class="post_img_wrap">
+        <view class="up_img_item" wx:for="{{chooseImgs}}" wx:key="*this" bindtap="handleRemoveImg" data-index="{{index}}">
+            <UpImg src="{{item}}"></UpImg>
+        </view>
+        <button bindtap="handleChooseImg" wx:if="{{chooseImgs.length!==9}}">+</button>
+    </view>
+</view>
+<view class="category_wrap">
+    <view class="cates">
+        <view class="cates_title">选择类别</view>
+        <view class="cates_content">
+            <view wx:for="{{cates}}" wx:key="id" class="{{item.isActive?'active':''}}" bindtap="handleTapCatesItem" data-index="{{index}}">
+                {{item.value}}
+            </view>
+        </view>
+    </view>
+    <view class="keywords">
+        <view class="keywords_title">
+            选择标签
+            <text class="keywords_tip">（选择后帖子更容易被大家看到哦）</text>
+        </view>
+        <view class="keywords_content">
+            <view wx:for="{{keywords}}" wx:key="id" class="{{item.isActive?'active':''}}" bindtap="handleTapKeywordsItem" data-index="{{index}}">
+                {{item.value}}
+            </view>
+            <view bindtap="handleAddKeywordsItem">
+                <text wx:if="{{!DIY}}">自定义标签</text>
+                <view class="DIY_wrap" wx:if="{{DIY}}">
+                    <input value="{{DIYTextVal}}" placeholder="自定义标签" maxlength="10" bindinput="handleDIYinput" bindblur="handleBlur" auto-focus="{{true}}"></input>
+                    <text class="iconfont icon-gou1" bindtap="handleDIYfinished"></text>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>
+<view class="submit_wrap">
+    <view class="post_time_wrap iconfont icon-time {{delTime?'active':''}}" bindtap="handlePostTime"></view>
+    <view class="submit_btn" bindtap="handleSubmit">发送</view>
+</view>

@@ -1,5 +1,10 @@
 <!-- 搜索栏 -->
-<Search></Search>
+<view class="search">
+  <navigator url="/pages/search/search" open-type="navigate">
+    <icon class="" type="search" size="23" color=""></icon>
+    搜索
+  </navigator>
+</view>
 <!-- 轮播图 -->
 <view class="index_swiper">
   <swiper autoplay interval="2000" circular indicator-dots>
@@ -26,28 +31,26 @@
             <image src="{{item.user_icon}}" mode="widthFix"></image>
             <view class="user_name">{{item.user_name}}</view>
           </view>
-          <!-- <view class="post_time iconfont icon-time">{{currentTime - item.publish_time}}毫秒前</view> -->
+          <!-- <view class="post_time iconfont icon-time">{{item.post_time}}</view> -->
           <view class="post_time iconfont icon-time">{{wxsTest.timeMinus(currentTime,item.publish_time)}}</view>
           <view class="post_position iconfont icon-diliweizhi">{{item.post_position}}</view>
         </view>
       </navigator>
       <view class="post_comments">
-        <view class="iconfont {{item.isLike?'icon-dianzan-aixinshixin':'icon-empty'}}" bindtap="handleTapLike" data-index="{{index}}">
+        <view class="iconfont {{isLike[index]?'icon-dianzan-aixinshixin':'icon-empty'}}" bindtap="handleTapLike" data-index="{{index}}">
           <text decode>&nbsp;</text>
-          {{item.comments.likes_num}}
+          {{item.likes_num}}
         </view>
         <view class="iconfont icon-pinglun" bindtap="handleTapComment" data-index="{{index}}">
           <text decode>&nbsp;</text>
           {{item.comments.comments_num}}
         </view>
-        <view class="iconfont icon-huaban19">
-          <button open-type="share"></button>
-        </view>
+        <!-- 转发功能还没搞 -->
+        <view class="iconfont icon-huaban19"></view>
       </view>
     </view>
   </view>
 </Tabs>
-
 
 <wxs module="wxsTest">
   function timeMinus (currentTime,publishTime){

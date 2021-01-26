@@ -1,1 +1,169 @@
-/* pages/post/post.wxss */
+page {
+  background-color: #eee;
+  padding-bottom: 100rpx;
+}
+.post_user_info_row {
+  width: 100%;
+  height: 120rpx;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+}
+.post_user_info_row .post_user_info {
+  display: flex;
+  align-items: center;
+}
+.post_user_info_row .post_user_info image {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 40rpx;
+}
+.post_user_info_row .post_user_info .post_user_name {
+  font-size: 40rpx;
+  font-weight: 700;
+  margin-left: 20rpx;
+}
+.post_user_info_row .chat {
+  width: 200rpx;
+  height: 80rpx;
+  color: #fff;
+  text-align: center;
+  line-height: 80rpx;
+  font-size: 36rpx;
+  background-color: var(--themeColor);
+  border-radius: 40rpx;
+}
+.post {
+  position: relative;
+  background-color: #fff;
+  padding: 20rpx ;
+}
+.post .post_title {
+  font-size: 36rpx;
+  padding-bottom: 20rpx;
+}
+.post .post_content .post_content_text {
+  font-size: 30rpx;
+}
+.post .post_content .post_content_img :nth-child(3n) {
+  margin-right: 0;
+}
+.post .post_content .post_content_img image {
+  width: 223.33rpx;
+  height: 223.33rpx;
+  background-color: pink;
+  margin-right: 20rpx;
+  margin-top: 10rpx;
+}
+.post .post_tags {
+  display: flex;
+}
+.post .post_tags .tags_item {
+  background-color: var(--themeColor);
+  color: #fff;
+  padding: 0 10rpx;
+  margin-top: 20rpx;
+  margin-right: 10rpx;
+  border-radius: 10rpx;
+}
+.post .post_time {
+  position: absolute;
+  bottom: 40rpx;
+  right: 20rpx;
+  font-size: 20rpx;
+  color: #666;
+}
+.post .post_position {
+  position: absolute;
+  bottom: 10rpx;
+  right: 20rpx;
+  font-size: 20rpx;
+  color: #666;
+}
+.comments {
+  background-color: #fff;
+  margin-top: 20rpx;
+}
+.comments .comments_title {
+  font-size: 30rpx;
+  padding: 20rpx;
+  margin: 20rpx;
+  font-weight: 700;
+  border-bottom: 1rpx solid #ccc;
+}
+.comments .comments_item {
+  position: relative;
+  padding: 20rpx;
+  border-bottom: 1rpx solid #ddd;
+}
+.comments .comments_item .comment_user_info {
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+}
+.comments .comments_item .comment_user_info image {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 30rpx;
+}
+.comments .comments_item .comment_user_info .comment_user_name {
+  margin-left: 20rpx;
+}
+.comments .comments_item .comment_content {
+  margin: 0 50rpx 0 80rpx;
+}
+.comments .comments_item .comment_time {
+  color: #666;
+  margin: 20rpx 80rpx;
+  font-size: 26rpx;
+}
+.comments .comments_item .comments_likes {
+  position: absolute;
+  top: 25rpx;
+  right: 30rpx;
+}
+.comments .comments_item .icon-dianzan-aixinshixin {
+  color: red;
+}
+.btm_tools {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100rpx;
+  display: flex;
+  background-color: #fff;
+  border-top: 1rpx solid #ccc;
+  padding: 10rpx;
+}
+.btm_tools .pinlun {
+  flex: 6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10rpx;
+}
+.btm_tools .pinlun .icon-fasong {
+  color: var(--themeColor);
+  font-size: 40rpx;
+  padding: 0 10rpx;
+  margin-top: -7rpx;
+}
+.btm_tools .pinlun input {
+  width: 100%;
+  font-size: 400;
+  border: 1rpx solid #ccc;
+  border-radius: 10rpx;
+  padding-left: 10rpx;
+}
+.btm_tools .iconfont {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.btm_tools .icon-dianzan-aixinshixin {
+  color: red;
+}

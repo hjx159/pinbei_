@@ -1,1 +1,47 @@
-<button bindtap="tapHandler" type="primary">获取用户open_id</button>
+<view class="post_user_info_row">
+    <view class="post_user_info">
+        <image src="{{post.user_icon}}" mode="widthFix"></image>
+        <view class="post_user_name">{{post.user_name}}</view>
+    </view>
+    <view class="chat" bindtap="handleChat">私聊</view>
+</view>
+<view class="post">
+    <view class="post_title">{{post.post_title}}</view>
+    <view class="post_content">
+        <view class="post_content_text">{{post.post_content}}</view>
+        <view class="post_content_img">
+            <image src="{{item}}" mode="widthFix" wx:for="{{post.pics_url}}" wx:key="*this" bindtap="handlePreviewImg" data-url="{{item}}"></image>
+        </view>
+    </view>
+    <view class="post_tags">
+        <view class="tags_item" wx:for="{{post.post_tags}}" wx:key="*this">{{item}}</view>
+    </view>
+    <view class="post_time iconfont icon-time">{{post.post_time}}</view>
+    <view class="post_position iconfont icon-diliweizhi">{{post.post_position}}</view>
+</view>
+<view class="comments" id="comment">
+    <view class="comments_title">所有评论</view>
+    <view class="comments_item" wx:for="{{post.comments.comments_list}}" wx:key="comment_id">
+        <view class="comment_user_info">
+            <image src="{{item.user_icon}}" mode="widthFix"></image>
+            <view class="comment_user_name">{{item.user_name}}</view>
+        </view>
+        <view class="comment_content">{{item.comment_content}}</view>
+        <view class="comment_time">{{item.comment_time}}</view>
+        <view class="comments_likes iconfont {{commentsIsLike[index]?'icon-dianzan-aixinshixin':'icon-empty'}}" bindtap="handleTapCommentsLike" data-index="{{index}}">
+            <text decode>&nbsp;</text>
+            {{item.likes_num}}
+        </view>
+    </view>
+</view>
+<view class="btm_tools">
+    <view class="pinlun">
+        <input value="{{textVal}}" bindinput="handleTextInput" type="text" placeholder="写下你想说的..."></input>
+        <view class="iconfont icon-fasong" bindtap="handleComment"></view>
+    </view>
+    <view class="iconfont {{isLike?'icon-dianzan-aixinshixin':'icon-empty'}}" bindtap="handleTapLike">
+        <text decode>&nbsp;</text>
+        {{post.likes_num}}
+    </view>
+    <view class="iconfont icon-huaban19"></view>
+</view>

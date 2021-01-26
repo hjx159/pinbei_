@@ -1,2 +1,34 @@
-<!--pages/user/user.wxml-->
-<text>pages/user/user.wxml</text>
+<view class="user_info">
+    <view class="login" wx:if="{{!userInfo.nickName}}">
+        <button type="primary" plain open-type="getUserInfo" bindgetuserinfo="handleGetUserInfo">
+            登录
+        </button>
+    </view>
+    <view class="user_name_wrap" wx:else>
+        <!-- <view class="user_name_wrap"> -->
+        <view class="user_name">{{userInfo.nickName}}</view>
+        <view class="user_icon">
+            <image src="{{userInfo.avatarUrl}}" mode="widthFix"></image>
+        </view>
+    </view>
+</view>
+<view class="user_item">
+    我的资料
+    <view class="iconfont icon-fa-right-copy"></view>
+</view>
+<view class="user_item">
+    我的帖子
+    <view class="iconfont icon-fa-right-copy"></view>
+</view>
+<view class="user_item">
+    我的评论
+    <view class="iconfont icon-fa-right-copy"></view>
+</view>
+<view class="user_item">
+    我的消息
+    <view class="iconfont icon-fa-right-copy"></view>
+</view>
+<view class="user_item">
+    设置
+    <view class="iconfont icon-fa-right-copy"></view>
+</view>

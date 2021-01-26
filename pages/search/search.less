@@ -1,0 +1,67 @@
+page {
+  background-color: #eee;
+  padding: 20rpx;
+}
+.search_row{
+  height: 60rpx;
+  display: flex;
+  margin-bottom: 30rpx;
+  input {
+      flex: 5;
+      height: 100%;
+      font-size: 28rpx;
+      background-color: #fff;
+      padding: 0 20rpx;
+      border-radius: 10rpx;
+  }
+  button {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 28rpx;
+      font-weight: 400;
+      background-color: #fff;
+      padding: 0;
+  }
+  .m {
+      margin-right: 20rpx;
+  }
+}
+.recommends{
+  padding-bottom: 0;
+  background-color: #fff;
+  margin-bottom: 30rpx;
+  .recommends_title{
+      padding: 10rpx;
+  }
+  .recommends_content{
+      display: flex;
+      flex-wrap: wrap;
+      view {
+          background-color: #fff;
+          padding: 0 30rpx;
+          margin: 10rpx;
+          border-radius: 10rpx;
+          border: 1rpx solid var(--themeColor);
+      }
+      .active {
+          background-color: var(--themeColor);
+          color: #fff;
+      }
+  }
+}
+.search_content{
+  .search_item{
+      background-color: #fff;
+      font-size: 26rpx;
+      padding: 15rpx 10rpx;
+      border-bottom: 1rpx solid #ccc;
+
+      // 使文字在一行上显示
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+  }
+}

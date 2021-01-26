@@ -1,2 +1,17 @@
-<!--pages/search/search.wxml-->
-<text>pages/search/search.wxml</text>
+<view class="search_row">
+    <input class="{{isFocus?'m':''}}" value="{{inputValue}}" type="text" placeholder="请输入您的关键词..." bindinput="handleInput" />
+    <button hidden="{{!isFocus}}" bindtap="handleCancel">取消</button>
+</view>
+<view class="recommends">
+    <view class="recommends_title">猜你喜欢</view>
+    <view class="recommends_content">
+        <view wx:for="{{recommends}}" wx:key="id" class="{{item.isActive?'active':''}}" bindtap="handleChooseRecommendsItem" data-index="{{index}}">
+            {{item.value}}
+        </view>
+    </view>
+</view>
+<view class="search_content">
+    <navigator url="/pages/post/post?post_id='{{item.post_id}}'&isComment=false" class="search_item" wx:for="{{posts}}" wx:key="post_id">
+        {{item.post_title}}
+    </navigator>
+</view>

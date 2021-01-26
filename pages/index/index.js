@@ -1,12 +1,13 @@
-let timeLimit = 108000000//时间限度为30个小时
-let numOfPostsOneTime = 5//上拉加载，每次10条
+let timeLimit = 10800000//时间限度为3个小时
+let numOfPostsOneTime = 5//上拉加载，每次5条
 let totalNum = -1//帖子总数（用于分页）
 let index = 0
 let keywords=[]
 const _ = wx.cloud.database().command
 let isTab = false
 let isEnd = false
-// let booL = false
+
+// posts
 Page({
   data: {
     // tab栏数据
@@ -56,13 +57,59 @@ Page({
         isActive: false
       }
     ],
+    // 用户个人信息
+    MyInfo: {
+      // 用户编号（唯一）
+      user_id: 20210123,
+      user_name: "XWH",
+      // 用户头像路径
+      user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132",
+      // 当前地理位置  
+      currentPosition: ""
+    },
     // 满足条件的帖子（数组）
     postsList: [],
-    currentTime:0
+    currentTime:0,
+  },
+
+  onLoad(){
+    const time = Date.now()
+    this.setData({
+      currentTime:time
+    })
+    const time_ = this.data.currentTime - timeLimit
+
+    wx.cloud.callFunction({
+      name:"countPosts",
+      data:{
+        timelimit:time_,
+        key:"全部"
+      },success:res=>{
+        // console.log("totalNum计算成功",totalNum)
+        totalNum=res.result.total
+      },fail:err=>{
+        console.log("totalNum计算失败.",err)
+      }
+    })
+    let { keywords } = this.data;
+    keywords.forEach(v => v.isActive = (v.id === 0) ? true : false);
+    this.setData({
+      keywords
+    })
+    this.getPagingData()
   },
 
   onShow() {
     // 发送请求 默认得到 三公里以内 吃 全部 对应的posts数组 以及 吃 对应的keywords数组
+    /* let isLike = [];
+    let { postsList } = this.data;
+    const MyId = this.data.MyInfo.user_id;
+    for (var i = 0; i < postsList.length; i++) {
+      isLike[i] = postsList[i].likes_list.some(v => v === MyId);
+    }
+    this.setData({
+      isLike
+    }) */
   },
 
   // 标题点击事件 改变标题并发送对应请求 从而改变posts数组
@@ -80,7 +127,6 @@ Page({
 
   // tab栏点击
   handlekeywordsItemChange(e) {
-    // booL=true
     this.setData({
       postsList:[]
     })
@@ -95,11 +141,13 @@ Page({
       console.log(isTab)
     }
 
+
     keywords = this.data.keywords;
     keywords.forEach(v => v.isActive = ((v.id === index) ? true : false));
     this.setData({
       keywords:keywords
     })
+
 
     const time = Date.now()
     this.setData({
@@ -121,23 +169,26 @@ Page({
         console.log("totalNum计算失败.",err)
       }
     })
-    
-    
   },
 
   // 点击点赞
   handleTapLike(e) {
     const { index } = e.currentTarget.dataset;
-    let { postsList } = this.data;
-    if (postsList[index].isLike) {
-      postsList[index].comments.likes_num--;
-      postsList[index].isLike = false;
+    let { postsList, isLike } = this.data;
+    const MyId = this.data.MyInfo.user_id;
+    if (isLike[index]) {
+      let i = postsList[index].likes_list.findIndex(v => v === MyId);
+      postsList[index].likes_list.splice(i, 1);
+      postsList[index].likes_num--;
+      isLike[index] = false;
     } else {
-      postsList[index].comments.likes_num++;
-      postsList[index].isLike = true;
+      postsList[index].likes_list.push(MyId);
+      postsList[index].likes_num++;
+      isLike[index] = true;
     }
     this.setData({
-      postsList
+      postsList,
+      isLike
     });
   },
 
@@ -152,7 +203,6 @@ Page({
 
   // 下拉刷新事件
   onPullDownRefresh() {
-    
     const time = Date.now()
     this.setData({
       currentTime:time
@@ -168,7 +218,6 @@ Page({
       keywords:keywords
     })
 
-    //wx.startPullDownRefresh()
     // if(index===0){
       isTab=false
       this.getPagingData()
@@ -202,7 +251,7 @@ Page({
 
   // 页面上划 滚动条触底事件
   onReachBottom() {
-    console.log("isTab:",isTab,";isEnd:",isEnd)
+    // console.log("isTab:",isTab,";isEnd:",isEnd)
     if(!isTab&&!isEnd){
       console.log("'全部'页滑到底部，数据更新!")
       this.getPagingData()
@@ -213,11 +262,6 @@ Page({
     isEnd=false
   },
 
-  // 获取商品列表数据
-  /* async getPostsList() {
-
-  }, */
-  
   getPagingData(){
     let len = this.data.postsList.length
     if(totalNum==len){
@@ -227,13 +271,13 @@ Page({
       isEnd=true
       return
     }
-    console.log(totalNum,len)
+    // console.log(totalNum,len)
     wx.showLoading({
       title: '拼命加载中！！',
     })
 
     const time = Date.now()
-    console.log(time)
+    // console.log(time)
     this.setData({
       currentTime:time
     })
@@ -318,88 +362,4 @@ Page({
       }
     })
   },
-  onLoad(){
-    const time = Date.now()
-    this.setData({
-      currentTime:time
-    })
-    const time_ = this.data.currentTime - timeLimit
-
-    wx.cloud.callFunction({
-      name:"countPosts",
-      data:{
-        timelimit:time_,
-        key:"全部"
-      },success:res=>{
-        console.log("totalNum计算成功",totalNum)
-        totalNum=res.result.total
-      },fail:err=>{
-        console.log("totalNum计算失败.",err)
-      }
-    })
-    let { keywords } = this.data;
-    keywords.forEach(v => v.isActive = (v.id === 0) ? true : false);
-    this.setData({
-      keywords
-    })
-    this.getPagingData()
-  },
-  onShow(){
-    /* wx.cloud.database().collection("posts").add({
-      data:{
-        // 帖子编号（唯一）
-        post_id: new Date().getTime(),
-        post_title: "奶茶999！！",
-        post_content: "快来吧!",
-        // 0——吃 1——玩 2——买
-        post_category: 0,
-        post_tags: ["奶茶", "奶茶拼单"],
-        // 传一个Date.now()类型的数 或者数组([年,月,日,时,分,秒])
-        // post_time: [2021, 1, 23, 11, 42, 51],
-       // post_time: "1分钟前",
-        publish_time:new Date().getTime(),
-        // 微信内置api提供
-        post_position: "距您500m",
-        // 用户编号（唯一）
-        user_id: 20210118,
-        user_name: "Jay",
-        // 用户头像路径
-        user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132",
-        // 图片外网路径数组
-        pics_url: [
-          "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132"
-        ],
-        // 是否结束拼单（需求满足/时限到期）
-        isCompleted: false,
-        // 是否已点赞
-        isLike: false,
-        // 评论
-        comments: {
-          likes_num: 0,
-          comments_num: 0,
-          comments_list: [
-            {
-              comment_id: 1,
-              comment_content: "dd",
-              user_name: "XXX",
-              user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132"
-            }
-          ]
-        }
-      },
-      success:res=>{
-        console.log("成功插入云数据库",res)
-      },
-      fail:err=>{
-        console.log("失败插入云数据库",err)
-      }
-    }) */
-
-    /* let { keywords } = this.data;
-    keywords.forEach(v => v.isActive = (v.id === 0) ? true : false);
-    this.setData({
-      keywords
-    })
-    this.getPagingData() */
-  }
 })
