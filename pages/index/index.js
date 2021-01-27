@@ -3,16 +3,12 @@ let numOfPostsOneTime = 5//上拉加载，每次5条
 let totalNum = -1//帖子总数（用于分页）
 let index = 0
 let keywords=[]
-// const _ = wx.cloud.database().command
 let isTab = false
 let isEnd = false
-
 let max = 4000//距离用户的最大距离为：4km
-// let latitude = 0
-// let longitude =0
 const db = wx.cloud.database()
 const _ = db.command
-// posts countPosts
+// posts countPosts isLike
 Page({
   data: {
     // tab栏数据
@@ -34,11 +30,7 @@ Page({
       }
     ],
     // 轮播图图片链接
-    swiperImgs: [
-      "https://img.alicdn.com/imgextra/i4/2206686532409/O1CN01zH1kdr1TfMmFLfAFU_!!2206686532409-0-lubanimage.jpg",
-      "https://img.alicdn.com/imgextra/i2/2206686532409/O1CN01c5CYFS1TfMmLOdpj5_!!2206686532409-0-lubanimage.jpg",
-      "https://img.alicdn.com/imgextra/i2/2206686532409/O1CN01uZ1QzJ1TfMmIonq0u_!!2206686532409-0-lubanimage.jpg"
-    ],
+    swiperImgs: [],
     // 关键词推荐
     keywords: [
       {
@@ -79,7 +71,25 @@ Page({
     postsList: [],
     currentTime:0,
   },
-
+  getSwiperImgs(){
+    let imgArr = []
+    wx.cloud.database().collection("swiperImgs").get({
+      success:res=>{
+        // console.log("请求轮播图成功",res.data)
+        let dataList = res.data
+        for(let i = 0 ;i<dataList.length;i++){
+          imgArr.push(dataList[i].url)
+        }
+        // console.log("imgArr数组为：",imgArr)
+        this.setData({
+          swiperImgs:imgArr
+        })
+      },
+      fail:err=>{
+        console.log("请求轮播图失败",err)
+      }
+    })
+  },
   onLoad(){
     console.log(new Date().getTime())
     this.setData({
@@ -126,8 +136,8 @@ Page({
         timelimit:time_,
         key:"全部"
       },success:res=>{
-        console.log(res)
-        totalNum=res.result.total
+        console.log(res.result.data)
+        totalNum=res.result.data.length
         console.log("countPosts云函数返回：totalNum计算成功",totalNum)
       },fail:err=>{
         console.log("countPosts云函数返回：totalNum计算失败.",err)
@@ -143,7 +153,7 @@ Page({
 
   onShow() {
     // 发送请求 默认得到 三公里以内 吃 全部 对应的posts数组 以及 吃 对应的keywords数组
-    /* let isLike = [];
+    let isLike = [];
     let { postsList } = this.data;
     const MyId = this.data.MyInfo.user_id;
     for (var i = 0; i < postsList.length; i++) {
@@ -151,7 +161,9 @@ Page({
     }
     this.setData({
       isLike
-    }) */
+    })
+
+    this.getSwiperImgs()
   },
 
   // 标题点击事件 改变标题并发送对应请求 从而改变posts数组
@@ -208,7 +220,7 @@ Page({
         key:keywords[index].value
       },success:res=>{
         console.log(res)
-        totalNum=res.result.total
+        totalNum=res.result.data.length
         console.log("countPosts云函数返回：totalNum计算成功,当前tab的帖子总数是:",totalNum)
         this.getPagingDataForTab()
       },fail:err=>{
@@ -249,7 +261,29 @@ Page({
 
   // 下拉刷新事件
   onPullDownRefresh() {
-    
+    const time1 = Date.now()
+    this.setData({
+      currentTime:time1
+    })
+    const time_ = this.data.currentTime - timeLimit
+
+    wx.cloud.callFunction({
+      name:"countPosts",
+      data:{
+        longitude:this.data.MyInfo.currentPosition.longitude,
+        latitude:this.data.MyInfo.currentPosition.latitude,
+        maxDistance:max,
+        timelimit:time_,
+        key:"全部"
+      },success:res=>{
+        console.log(res.result.data)
+        totalNum=res.result.data.length
+        console.log("countPosts云函数返回：totalNum计算成功",totalNum)
+      },fail:err=>{
+        console.log("countPosts云函数返回：totalNum计算失败.",err)
+      }
+    })
+
     const time = Date.now()
     this.setData({
       currentTime:time
@@ -298,7 +332,6 @@ Page({
 
   // 页面上划 滚动条触底事件
   onReachBottom() {
-    // console.log("isTab:",isTab,";isEnd:",isEnd)
     if(!isTab&&!isEnd){
       console.log("'全部'页滑到底部，数据更新!")
       this.getPagingData()
@@ -331,16 +364,6 @@ Page({
     })
     const time_ = this.data.currentTime - timeLimit
 
-    /* while(isEnded){
-      wx.cloud.database().collection("list_").where({
-        isCompleted:false
-      }).update({
-        data:{
-          distance:
-        }
-      })
-    } */
-
     wx.cloud.callFunction({
       name:"getPostList",
       data:{
@@ -358,7 +381,6 @@ Page({
         this.setData({
           postsList:this.data.postsList.concat(res.result.data)
         })
-        // console.log("当前的postsList:",this.data.postsList)
       },
       fail:err=>{
         console.log("数据库查询失败",err)
