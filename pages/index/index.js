@@ -1,4 +1,4 @@
-let timeLimit = 10800000//时间限度为3个小时
+let timeLimit = 108000000//时间限度为30个小时
 let numOfPostsOneTime = 5//上拉加载，每次5条
 let totalNum = -1//帖子总数（用于分页）
 let index = 0
@@ -7,7 +7,7 @@ let keywords=[]
 let isTab = false
 let isEnd = false
 
-let max = 5000//4km
+let max = 4000//距离用户的最大距离为：4km
 // let latitude = 0
 // let longitude =0
 const db = wx.cloud.database()
@@ -358,6 +358,7 @@ Page({
         this.setData({
           postsList:this.data.postsList.concat(res.result.data)
         })
+        // console.log("当前的postsList:",this.data.postsList)
       },
       fail:err=>{
         console.log("数据库查询失败",err)
