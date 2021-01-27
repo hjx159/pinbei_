@@ -8,13 +8,15 @@ const _ = db.command
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  return db.collection("posts").where({
+  return await db.collection("test1").where({
+    // post_id:_.eq(event.post_id)
     post_id:event.post_id
-  }).get();
-  /* .then(res=>{
-    console.log("返回帖子详情成功",res)
+  }).get({
+    success:res=>{
+      console.log("返回帖子详情成功",res)
+    },
+    fail:res=>{
+      console.log("返回帖子详情失败",res)
+    }
   })
-  .catch(err=>{
-    console.log("返回帖子详情失败",err)
-  }) */
 }

@@ -8,7 +8,7 @@ let isEnd = false
 let max = 4000//距离用户的最大距离为：4km
 const db = wx.cloud.database()
 const _ = db.command
-// posts countPosts isLike
+// posts countPosts isLike swiperImgs
 Page({
   data: {
     // tab栏数据
@@ -100,7 +100,8 @@ Page({
         }
       }
     })
-    console.log("当前用户的纬度、经度是：",this.data.MyInfo.currentPosition)
+    // console.log("当前用户的纬度、经度是：",this.data.MyInfo.currentPosition)
+    
     //获取用户的地理位置
     /* wx.getLocation({
       type: 'gcj02',
@@ -136,7 +137,7 @@ Page({
         timelimit:time_,
         key:"全部"
       },success:res=>{
-        console.log(res.result.data)
+        // console.log(res.result.data)
         totalNum=res.result.data.length
         console.log("countPosts云函数返回：totalNum计算成功",totalNum)
       },fail:err=>{
@@ -219,7 +220,7 @@ Page({
         timelimit:time_,
         key:keywords[index].value
       },success:res=>{
-        console.log(res)
+        // console.log(res)
         totalNum=res.result.data.length
         console.log("countPosts云函数返回：totalNum计算成功,当前tab的帖子总数是:",totalNum)
         this.getPagingDataForTab()
@@ -276,7 +277,7 @@ Page({
         timelimit:time_,
         key:"全部"
       },success:res=>{
-        console.log(res.result.data)
+        // console.log(res.result.data)
         totalNum=res.result.data.length
         console.log("countPosts云函数返回：totalNum计算成功",totalNum)
       },fail:err=>{
@@ -352,7 +353,7 @@ Page({
       console.log("当前的totalNum和len分别是：",totalNum,len,"，下拉刷新返回！")
       return
     }
-    console.log(totalNum,len)
+    // console.log(totalNum,len)
     wx.showLoading({
       title: '拼命加载中！！',
     })

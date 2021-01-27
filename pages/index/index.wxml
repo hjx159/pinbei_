@@ -24,7 +24,7 @@
   <!-- 帖子列表 -->
   <view class="posts">
     <view class="posts_item" wx:for="{{postsList}}" wx:key="post_id">
-      <navigator url="/pages/post/post?post_id='{{item.post_id}}'&isComment=false">
+      <navigator url="/pages/post/post?post_id={{item.post_id}}&isComment=false">
         <view class="post_main">
           <view class="post_title">{{item.post_title}}</view>
           <view class="user_info">
