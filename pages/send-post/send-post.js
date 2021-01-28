@@ -268,16 +268,19 @@ Page({
       }
       // 整理帖子内容 并发送到后台
       let myPost = {
-        post_id: 0,
+        post_id: new Date().getTime(),
         post_title: this.data.titleTextVal,
         post_content: this.data.contentTextVal,
         post_category: this.data.cates.findIndex(v => v.isActive === true),
         post_tags: tags,
-        post_time: "",
-        post_position: "",
+        // post_time: "",
+        publish_time:new Date().getTime(),
+        // post_position: "",
+        // position:要借助全局数据结构MyInfo,
         user_id: this.data.MyInfo.user_id,
         user_name: this.data.MyInfo.user_name,
         user_icon: this.data.MyInfo.user_icon,
+
         pics_url: UploadImgs,
         delTime: this.data.delTime,
         isCompleted: false,
@@ -286,55 +289,67 @@ Page({
         comments: {
           comments_num: 0,
           comments_list: []
-        }
+        },
       };
-      // 清空页面内容
-      this.setData({
-        titleTextVal: "",
-        contentTextVal: "",
-        chooseImgs: [],
-        cates: [
-          {
-            id: 0,
-            value: "吃",
-            isActive: false
-          },
-          {
-            id: 1,
-            value: "玩",
-            isActive: false
-          },
-          {
-            id: 2,
-            value: "买",
-            isActive: false
-          }
-        ],
-        keywords: [
-          {
-            id: 0,
-            value: "买二送一",
-            isActive: false
-          },
-          {
-            id: 1,
-            value: "奶茶",
-            isActive: false
-          },
-          {
-            id: 2,
-            value: "披萨",
-            isActive: false
-          },
-          {
-            id: 3,
-            value: "炸鸡",
-            isActive: false
-          }
-        ],
-        delTime: ""
+      
+      //将myPost数据结构添加到数据库中
+      wx.cloud.callFunction({
+        name:"addPosts",
+        data:{
+          myPost:myPost
+        },
+        success:res=>{
+          console.log("帖子数据成功添加到数据库内",res)
+          // 清空页面内容
+          this.setData({
+            titleTextVal: "",
+            contentTextVal: "",
+            chooseImgs: [],
+            cates: [
+              {
+                id: 0,
+                value: "吃",
+                isActive: false
+              },
+              {
+                id: 1,
+                value: "玩",
+                isActive: false
+              },
+              {
+                id: 2,
+                value: "买",
+                isActive: false
+              }
+            ],
+            keywords: [
+              {
+                id: 0,
+                value: "买二送一",
+                isActive: false
+              },
+              {
+                id: 1,
+                value: "奶茶",
+                isActive: false
+              },
+              {
+                id: 2,
+                value: "披萨",
+                isActive: false
+              },
+              {
+                id: 3,
+                value: "炸鸡",
+                isActive: false
+              }
+            ],
+            delTime: ""
+          })
+          console.log(myPost);
+        },
+        fail:err=>{console.log("帖子数据未能发送到数据库中",err)}
       })
-      console.log(myPost);
     }
   }
 })
