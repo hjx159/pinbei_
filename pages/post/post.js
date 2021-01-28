@@ -15,7 +15,7 @@ Page({
     },
     // 贴子信息
     post: {
-      post:{
+     
       /*   // 帖子编号（唯一）
        post_id: 0,
        post_title: result.post_title,
@@ -53,7 +53,6 @@ Page({
        textVal: "" */
      },
      currentTime:0
-    }
   },
 
   onShow: function (options) {
@@ -239,5 +238,11 @@ Page({
   // 点击私聊按钮
   handleChat() {
 
+  },
+
+  //下拉刷新
+  onPullDownRefresh(){
+    this.onShow()
+    wx.stopPullDownRefresh()
   }
 })
