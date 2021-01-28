@@ -1,6 +1,6 @@
-let timeLimit = 108000000//时间限度为30个小时
+let timeLimit = 1080000000//时间限度为300个小时
 let numOfPostsOneTime = 5//上拉加载，每次5条
-let totalNum = -1//帖子总数（用于分页）
+let totalNum = 0//帖子总数（用于分页）
 let index = 0
 let keywords=[]
 let isTab = false
@@ -8,7 +8,7 @@ let isEnd = false
 let max = 4000//距离用户的最大距离为：4km
 const db = wx.cloud.database()
 const _ = db.command
-// posts countPosts isLike swiperImgs
+// posts countPosts isLike swiperImgs len
 Page({
   data: {
     // tab栏数据
@@ -140,16 +140,17 @@ Page({
         // console.log(res.result.data)
         totalNum=res.result.data.length
         console.log("countPosts云函数返回：totalNum计算成功",totalNum)
+        let { keywords } = this.data;
+        keywords.forEach(v => v.isActive = (v.id === 0) ? true : false);
+        this.setData({
+          keywords
+        })
+        this.getPagingData()
       },fail:err=>{
         console.log("countPosts云函数返回：totalNum计算失败.",err)
       }
     })
-    let { keywords } = this.data;
-    keywords.forEach(v => v.isActive = (v.id === 0) ? true : false);
-    this.setData({
-      keywords
-    })
-    this.getPagingData()
+    
   },
 
   onShow() {
@@ -280,59 +281,62 @@ Page({
         // console.log(res.result.data)
         totalNum=res.result.data.length
         console.log("countPosts云函数返回：totalNum计算成功",totalNum)
+        const time = Date.now()
+        this.setData({
+          currentTime:time
+        })
+
+        this.setData({
+          postsList:[]
+        })
+
+        keywords = this.data.keywords;
+        keywords.forEach(v => v.isActive = ((v.id === 0) ? true : false));
+        this.setData({
+          keywords:keywords
+        })
+
+        // if(index===0){
+          isTab=false
+          this.getPagingData()
+        /* }else{//有点问题
+          isTab=true
+          const time = Date.now()
+          this.setData({
+            currentTime:time
+          })
+          const time_ = this.data.currentTime - timeLimit
+
+          
+          wx.cloud.callFunction({
+            name:"countPosts",
+            data:{
+              timelimit:time_,
+              key:keywords[index].value
+            },success:res=>{
+              totalNum=res.result.total
+              console.log("totalNum计算成功,当前tab的帖子总数是:",totalNum)
+              this.getPagingDataForTab()
+            },fail:err=>{
+              console.log("totalNum计算失败.",err)
+            }
+          })
+          isTab=false
+          this.getPagingDataForTab()
+        } */
+        wx.stopPullDownRefresh()
       },fail:err=>{
         console.log("countPosts云函数返回：totalNum计算失败.",err)
       }
     })
 
-    const time = Date.now()
-    this.setData({
-      currentTime:time
-    })
-
-    this.setData({
-      postsList:[]
-    })
-
-    keywords = this.data.keywords;
-    keywords.forEach(v => v.isActive = ((v.id === 0) ? true : false));
-    this.setData({
-      keywords:keywords
-    })
-
-    // if(index===0){
-      isTab=false
-      this.getPagingData()
-    /* }else{//有点问题
-      isTab=true
-      const time = Date.now()
-      this.setData({
-        currentTime:time
-      })
-      const time_ = this.data.currentTime - timeLimit
-
-      
-      wx.cloud.callFunction({
-        name:"countPosts",
-        data:{
-          timelimit:time_,
-          key:keywords[index].value
-        },success:res=>{
-          totalNum=res.result.total
-          console.log("totalNum计算成功,当前tab的帖子总数是:",totalNum)
-          this.getPagingDataForTab()
-        },fail:err=>{
-          console.log("totalNum计算失败.",err)
-        }
-      })
-      isTab=false
-      this.getPagingDataForTab()
-    } */
-    wx.stopPullDownRefresh()
+    
   },
 
   // 页面上划 滚动条触底事件
   onReachBottom() {
+    let len = this.data.postsList.length
+    console.log("totalNum:",totalNum,";len:",len)
     if(!isTab&&!isEnd){
       console.log("'全部'页滑到底部，数据更新!")
       this.getPagingData()
@@ -345,7 +349,25 @@ Page({
 
   getPagingData(){
     let len = this.data.postsList.length
-    if(totalNum==len){
+    if(totalNum===0){
+      wx.showToast({
+        title: '当前时间距离范围内无帖子您可以对其设置',
+        icon:'none',
+        duration:3000
+      })
+      wx.showActionSheet({
+        // alertText:"当前时间、距离范围内无帖子\n您可以对其进行设置",
+        itemList: ['设置时间', '设置距离', '设置时间和距离'],
+        success (res) {
+          console.log(res.tapIndex)
+        },
+        fail (res) {
+          console.log(res.errMsg)
+        }
+      })
+      return
+    }
+    if(totalNum==len&&totalNum!=0){
       wx.showToast({
         title: '数据加载完毕',
       })
@@ -401,7 +423,26 @@ Page({
 
     let len = this.data.postsList.length
     
-    if(totalNum==len){
+    if(totalNum===0){
+      wx.showToast({
+        title: '当前时间距离范围内无帖子您可以对其设置',
+        icon:'none',
+        duration:3000
+      })
+      wx.showActionSheet({
+        // alertText:"当前时间、距离范围内无帖子\n您可以对其进行设置",
+        itemList: ['设置时间', '设置距离', '设置时间和距离'],
+        success (res) {
+          console.log(res.tapIndex)
+        },
+        fail (res) {
+          console.log(res.errMsg)
+        }
+      })
+      return
+    }
+
+    if(totalNum==len&&totalNum!=0){
       wx.showToast({
         title: '数据加载完毕',
       })
