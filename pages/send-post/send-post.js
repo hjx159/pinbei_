@@ -1,15 +1,7 @@
 Page({
   data: {
     // 用户个人信息
-    MyInfo: {
-      // 用户编号（唯一）
-      user_id: 20210123,
-      user_name: "XWH",
-      // 用户头像路径
-      user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132",
-      // 当前地理位置  
-      currentPosition: ""
-    },
+    MyInfo: {},
     // cates栏数据
     cates: [
       {
@@ -65,8 +57,26 @@ Page({
     DIYTextVal: ""
   },
 
-  onLoad: function (options) {
-    // 获取用户信息并赋值到data中
+  onShow: function (options) {
+    if(!wx.getStorageSync('userInfo').user_id){
+      wx.showToast({
+        title: '请先登录！',
+        icon:'none',
+      })
+      setTimeout(function(){
+        wx.switchTab({
+        url: '../user/user',
+        })
+      }
+      ,2000)
+    }else{
+      // 获取用户信息并赋值到data中
+      this.setData({
+        // MyInfo:app.globalData.userInfo
+        MyInfo:wx.getStorageSync('userInfo')
+      })
+      console.log(this.data.MyInfo)
+    }
   },
 
   // 标题输入事件
@@ -277,9 +287,10 @@ Page({
         publish_time:new Date().getTime(),
         // post_position: "",
         // position:要借助全局数据结构MyInfo,
+        position:this.data.MyInfo.position,
         user_id: this.data.MyInfo.user_id,
-        user_name: this.data.MyInfo.user_name,
-        user_icon: this.data.MyInfo.user_icon,
+        user_name: this.data.MyInfo.nickName,
+        user_icon: this.data.MyInfo.avatarUrl,
 
         pics_url: UploadImgs,
         delTime: this.data.delTime,

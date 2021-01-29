@@ -36,7 +36,7 @@
           <!-- <view class="post_position iconfont icon-diliweizhi">{{item.post_position}}</view> -->
 
 
-          <view class="post_position iconfont icon-diliweizhi">{{calculateDistance.calDistance(MyInfo.currentPosition.latitude,MyInfo.currentPosition.longitude,item.position.coordinates[1],item.position.coordinates[0])}}</view>
+          <view class="post_position iconfont icon-diliweizhi">{{calculateDistance.calDistance(MyInfo.position.latitude,MyInfo.position.longitude,item.position.coordinates[1],item.position.coordinates[0])}}</view>
         
         
         </view>

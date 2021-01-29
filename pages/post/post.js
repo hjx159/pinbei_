@@ -1,18 +1,7 @@
 Page({
   data: {
     // 用户个人信息
-    MyInfo: {
-      // 用户编号（唯一）
-      user_id: 20210123,
-      user_name: "XWH",
-      // 用户头像路径
-      user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132",
-      // 当前地理位置  
-      currentPosition: {
-        latitude:26.428351, //纬度
-        longitude:112.856476 //经度
-      }
-    },
+    MyInfo: {},
     // 贴子信息
     post: {
      
@@ -56,6 +45,13 @@ Page({
   },
 
   onShow: function (options) {
+    
+    this.setData({
+      // MyInfo:app.globalData.userInfo
+      MyInfo:wx.getStorageSync('userInfo')
+    })
+    console.log(this.data.MyInfo)
+    
     //获取此时时间
     this.setData({
       currentTime:new Date().getTime()
@@ -65,6 +61,13 @@ Page({
     let pages = getCurrentPages();
     // 数组中索引最大的就是当前页面
     let currentPage = pages[pages.length - 1];
+    
+    //修改首页中的一个布尔变量
+    var prevPage = pages[pages.length-2];
+    prevPage.setData({
+      isReturnFromPost:true
+    })
+    
     // 获取传入的goods_id参数
     // const { post_id, isComment } = currentPage.options;
     var post_id = JSON.parse(currentPage.options.post_id)
@@ -221,8 +224,8 @@ Page({
       comment_id: post.comments.comments_num,
       comment_content: textVal,
       comment_time: "1秒钟前",
-      user_name: MyInfo.user_name,
-      user_icon: MyInfo.user_icon,
+      user_name: MyInfo.nickName,
+      user_icon: MyInfo.avatarUrl,
       likes_list: [],
       likes_num: 0
     }

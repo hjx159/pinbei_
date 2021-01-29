@@ -9,6 +9,8 @@ let max = 4000//距离用户的最大距离为：4km
 const db = wx.cloud.database()
 const _ = db.command
 var app = getApp()
+// var globalUserInfo = app.globalData.userInfo
+var storageUserInfo = wx.getStorageSync('userInfo')
 // app.globalData.userInfo
 // posts countPosts isLike swiperImgs len
 Page({
@@ -57,21 +59,11 @@ Page({
       }
     ],
     // 用户个人信息
-    MyInfo: {
-      // 用户编号（唯一）
-      user_id: 20210123,
-      user_name: "XWH",
-      // 用户头像路径
-      user_icon: "https://thirdwx.qlogo.cn/mmopen/vi_32/V1Af82fG1XWgLduic37AbvxicNkzSCAiasQ4W8ibViatccFgPf2b2Nzx3UqZhMqMQJFpGUFDiaBaAZx23bwenuZ7wwLA/132",
-      // 当前地理位置  
-      currentPosition: {
-        latitude:0, //纬度
-        longitude:0 //经度
-      }
-    },
+    MyInfo: {},
     // 满足条件的帖子（数组）
     postsList: [],
     currentTime:0,
+    isReturnFromPost:false
   },
   getSwiperImgs(){
     let imgArr = []
@@ -93,81 +85,89 @@ Page({
     })
   },
   onLoad(){
-    console.log(new Date().getTime())
-    this.setData({
-      MyInfo:{
-        currentPosition:{
-          latitude:26.428351,
-          longitude:112.856476
-        }
-      }
-    })
-    // console.log("当前用户的纬度、经度是：",this.data.MyInfo.currentPosition)
-    
-    //获取用户的地理位置
-    /* wx.getLocation({
-      type: 'gcj02',
-      success:res=> {
-          this.setData({
-            MyInfo:{
-              currentPosition:{
-                latitude:res.latitude,
-                longitude:res.longitude
-              }
-            }
-          })
-          console.log("当前用户的纬度、经度是：",this.data.MyInfo.currentPosition)
-      },
-      fail:err=>{
-        console.log("获取用户地理位置失败",err)
-      }
-  }) */
-
-
-    const time = Date.now()
-    this.setData({
-      currentTime:time
-    })
-    const time_ = this.data.currentTime - timeLimit
-
-    wx.cloud.callFunction({
-      name:"countPosts",
-      data:{
-        longitude:this.data.MyInfo.currentPosition.longitude,
-        latitude:this.data.MyInfo.currentPosition.latitude,
-        maxDistance:max,
-        timelimit:time_,
-        key:"全部"
-      },success:res=>{
-        // console.log(res.result.data)
-        totalNum=res.result.data.length
-        console.log("countPosts云函数返回：totalNum计算成功",totalNum)
-        let { keywords } = this.data;
-        keywords.forEach(v => v.isActive = (v.id === 0) ? true : false);
-        this.setData({
-          keywords
+    if(!wx.getStorageSync('userInfo').user_id){
+      wx.showToast({
+        title: '请先登录！',
+        icon:'none',
+      })
+      setTimeout(function(){
+        wx.switchTab({
+        url: '../user/user',
         })
-        this.getPagingData()
-      },fail:err=>{
-        console.log("countPosts云函数返回：totalNum计算失败.",err)
       }
-    })
-    
+      ,2000)
+    }
   },
 
   onShow() {
-    // 发送请求 默认得到 三公里以内 吃 全部 对应的posts数组 以及 吃 对应的keywords数组
-    let isLike = [];
-    let { postsList } = this.data;
-    const MyId = this.data.MyInfo.user_id;
-    for (var i = 0; i < postsList.length; i++) {
-      isLike[i] = postsList[i].likes_list.some(v => v === MyId);
-    }
-    this.setData({
-      isLike
-    })
+    if(!wx.getStorageSync('userInfo').user_id){
+      wx.showToast({
+        title: '请先登录！',
+        icon:'none',
+      })
+      setTimeout(function(){
+        wx.switchTab({
+        url: '../user/user',
+        })
+      }
+      ,2000)
+      /* wx.switchTab({
+        url: '../user/user',
+      }) */
+    }else{
+      if(!this.data.isReturnFromPost){
+        this.setData({
+          // MyInfo:app.globalData.userInfo
+          MyInfo:wx.getStorageSync('userInfo')
+        })
+        console.log(this.data.MyInfo)
+        console.log(new Date().getTime())
 
-    this.getSwiperImgs()
+        const time = Date.now()
+        this.setData({
+          currentTime:time
+        })
+        const time_ = this.data.currentTime - timeLimit
+
+        wx.cloud.callFunction({
+          name:"countPosts",
+          data:{
+            longitude:this.data.MyInfo.position.longitude,
+            latitude:this.data.MyInfo.position.latitude,
+            maxDistance:max,
+            timelimit:time_,
+            key:"全部"
+          },success:res=>{
+            // console.log(res.result.data)
+            totalNum=res.result.data.length
+            console.log("countPosts云函数返回：totalNum计算成功",totalNum)
+            let { keywords } = this.data;
+            keywords.forEach(v => v.isActive = (v.id === 0) ? true : false);
+            this.setData({
+              keywords
+            })
+            this.getPagingData()
+          },fail:err=>{
+            console.log("countPosts云函数返回：totalNum计算失败.",err)
+          }
+        })
+
+        // 发送请求 默认得到 三公里以内 吃 全部 对应的posts数组 以及 吃 对应的keywords数组
+        let isLike = [];
+        let { postsList } = this.data;
+        const MyId = this.data.MyInfo.nickName;
+        for (var i = 0; i < postsList.length; i++) {
+          isLike[i] = postsList[i].likes_list.some(v => v === MyId);
+        }
+        this.setData({
+          isLike
+        })
+
+        this.getSwiperImgs()
+      }else{
+        //此时onShow是因为从帖子详情返回，不需要操作
+      }
+    }
   },
 
   // 标题点击事件 改变标题并发送对应请求 从而改变posts数组
@@ -218,8 +218,8 @@ Page({
     wx.cloud.callFunction({
       name:"countPosts",
       data:{
-        longitude:this.data.MyInfo.currentPosition.longitude,
-        latitude:this.data.MyInfo.currentPosition.latitude,
+        longitude:this.data.MyInfo.position.longitude,
+        latitude:this.data.MyInfo.position.latitude,
         maxDistance:max,
         timelimit:time_,
         key:keywords[index].value
@@ -238,7 +238,7 @@ Page({
   handleTapLike(e) {
     const { index } = e.currentTarget.dataset;
     let { postsList, isLike } = this.data;
-    const MyId = this.data.MyInfo.user_id;
+    const MyId = this.data.MyInfo.nickName;
     if (isLike[index]) {
       let i = postsList[index].likes_list.findIndex(v => v === MyId);
       postsList[index].likes_list.splice(i, 1);
@@ -275,8 +275,8 @@ Page({
     wx.cloud.callFunction({
       name:"countPosts",
       data:{
-        longitude:this.data.MyInfo.currentPosition.longitude,
-        latitude:this.data.MyInfo.currentPosition.latitude,
+        longitude:this.data.MyInfo.position.longitude,
+        latitude:this.data.MyInfo.position.latitude,
         maxDistance:max,
         timelimit:time_,
         key:"全部"
@@ -393,8 +393,8 @@ Page({
     wx.cloud.callFunction({
       name:"getPostList",
       data:{
-        longitude:this.data.MyInfo.currentPosition.longitude,
-        latitude:this.data.MyInfo.currentPosition.latitude,
+        longitude:this.data.MyInfo.position.longitude,
+        latitude:this.data.MyInfo.position.latitude,
         maxDistance:max,
         numOfPostsOneTime:numOfPostsOneTime,
         len:len,
@@ -458,8 +458,8 @@ Page({
     wx.cloud.callFunction({
       name:"getPostList",
       data:{
-        longitude:this.data.MyInfo.currentPosition.longitude,
-        latitude:this.data.MyInfo.currentPosition.latitude,
+        longitude:this.data.MyInfo.position.longitude,
+        latitude:this.data.MyInfo.position.latitude,
         maxDistance:max,
         numOfPostsOneTime:numOfPostsOneTime,
         len:len,

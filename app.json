@@ -1,5 +1,6 @@
 {
   "pages": [
+    
     "pages/index/index",
     "pages/send-post/send-post",
     "pages/user/user",
@@ -9,8 +10,7 @@
     "pages/myInfo/myInfo",
     "pages/myPosts/myPosts",
     "pages/setTime/setTime",
-    "pages/myComments/myComments",
-    "pages/test/test"
+    "pages/myComments/myComments"
   ],
   "permission": {
     "scope.userLocation": {

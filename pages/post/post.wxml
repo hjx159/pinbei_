@@ -19,7 +19,7 @@
     <!-- <view class="post_time iconfont icon-time">{{post.post_time}}</view> -->
     <view class="post_time iconfont icon-time">{{wxsTest.timeMinus(currentTime,post.publish_time)}}</view>
     <!-- <view class="post_position iconfont icon-diliweizhi">{{post.post_position}}</view> -->
-    <view class="post_position iconfont icon-diliweizhi">{{calculateDistance.calDistance(MyInfo.currentPosition.latitude,MyInfo.currentPosition.longitude,post.position.coordinates[1],post.position.coordinates[0])}}</view>
+    <view class="post_position iconfont icon-diliweizhi">{{calculateDistance.calDistance(MyInfo.position.latitude,MyInfo.position.longitude,post.position.coordinates[1],post.position.coordinates[0])}}</view>
 </view>
 <view class="comments" id="comment">
     <view class="comments_title">所有评论</view>
