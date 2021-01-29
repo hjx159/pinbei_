@@ -8,6 +8,8 @@ let isEnd = false
 let max = 4000//距离用户的最大距离为：4km
 const db = wx.cloud.database()
 const _ = db.command
+var app = getApp()
+// app.globalData.userInfo
 // posts countPosts isLike swiperImgs len
 Page({
   data: {
@@ -183,6 +185,7 @@ Page({
 
   // tab栏点击
   handlekeywordsItemChange(e) {
+    console.log(app.globalData.userInfo)
     this.setData({
       postsList:[]
     })
