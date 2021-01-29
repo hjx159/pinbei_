@@ -46,7 +46,7 @@ Page({
           userInfo:userInfo
         })
         console.log(this.data.userInfo)
-        wx.cloud.callFunction({
+        /* wx.cloud.callFunction({
           name:"addUserInfo",
           data:{
             userInfo:userInfo
@@ -57,7 +57,7 @@ Page({
           fail:err=>{
             console.log("添加用户信息至数据库失败",err)
           }
-        })
+        }) */
         app.globalData.userInfo=userInfo
         console.log(app.globalData.userInfo)
         wx.setStorageSync("userInfo", userInfo);
@@ -66,5 +66,10 @@ Page({
         console.log("获取用户地理位置失败",err)
       }
     })
-  }
+  },
+  handleTapmyPosts(e){
+    wx.navigateTo({
+      url: '/pages/myPosts/myPosts'
+    });
+   }
 })

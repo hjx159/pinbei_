@@ -1,2 +1,93 @@
 <!--pages/myPosts/myPosts.wxml-->
-<text>pages/myPosts/myPosts.wxml</text>
+  <!-- 帖子列表 -->
+  <view class="posts">
+  <view class="posts_item" wx:for="{{list}}" wx:key="allmyPosts">
+    <navigator url="/pages/post/post?post_id={{item.post_id}}&isComment=false">
+    <view class="post_main">
+          <view class="post_title">{{item.post_title}}</view>
+          <view class="user_info">
+            <image src="{{item.user_icon}}" mode="widthFix"></image>
+            <view class="user_name">{{item.user_name}}</view>
+          </view>
+          <!-- <view class="post_time iconfont icon-time">{{item.post_time}}</view> -->
+          <view class="post_time iconfont icon-time">{{wxsTest.timeMinus(currentTime,item.publish_time)}}</view>
+          <!-- <view class="post_position iconfont icon-diliweizhi">{{item.post_position}}</view> -->
+
+
+          <view class="post_position iconfont icon-diliweizhi">{{calculateDistance.calDistance(MyInfo.position.latitude,MyInfo.position.longitude,item.position.coordinates[1],item.position.coordinates[0])}}</view>
+        
+        
+        </view>
+      </navigator>
+      <view class="post_comments">
+        <view class="iconfont {{isLike[index]?'icon-dianzan-aixinshixin':'icon-empty'}}" bindtap="handleTapLike" data-index="{{index}}">
+          <text decode>&nbsp;</text>
+          {{item.likes_num}}
+        </view>
+        <view class="iconfont icon-pinglun" bindtap="handleTapComment" data-index="{{index}}">
+          <text decode>&nbsp;</text>
+          {{item.comments.comments_num}}
+        </view>
+        <!-- 转发功能还没搞 -->
+        <view class="iconfont icon-huaban19"></view>
+    </view>
+  </view>
+</view>
+
+<wxs module="wxsTest">
+  function timeMinus (currentTime,publishTime){
+    var res = (currentTime-publishTime)/1000
+    if(res<60){
+      return parseInt(res)+"秒前"
+    }else if(res>=60&&res<=3600){
+      return parseInt(res/60) +"分钟前"
+    }else if(res>3600&&res<=86400){
+      return parseInt(res/3600) + "小时前"
+    }else{
+      return parseInt(res/86400) +"天前"
+    }
+  }
+  module.exports={
+    timeMinus:timeMinus
+  }
+</wxs>
+
+<wxs module="calculateDistance">
+  function calDistance(lat1,lng1,lat2,lng2){
+    var radLat1 = lat1 * Math.PI/180.0;
+    var radLat2 = lat2 * Math.PI/180.0;
+    var a = radLat1 - radLat2;
+    var b = lng1* Math.PI/180.0 - lng2* Math.PI/180.0;
+    var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) + Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+    s=s*6378.137;
+    s = Math.round(s * 10000) / 10000;
+    s = s.toFixed(2) + '公里' //保留两位小数
+    // console.log('经纬度计算的距离:' + s)
+    return s
+
+    /* var QQMapWX = require('../../libs/qqmap-wx-jssdk.js')
+    
+    var _that = this
+    var demo = new QQMapWX({
+      key:'UR5BZ-IIGKU-LPYVQ-4HFNJ-VSSR2-PFF6Z'
+    });
+    demo.calculateDistance({
+      mode:"walking",//默认也是walking
+      from:userPosition,
+      to:postPosition,
+      success: function(res) {
+                 let hw = res.result.elements[0].distance //拿到距离(米)
+                 if (hw && hw !== -1) { //拿到正确的值
+                     //转换成公里
+                     hw = (hw / 2 / 500).toFixed(2) + '公里'
+                 } else {
+                     hw = "距离太近或请刷新重试"
+                 }
+                 return hw
+      }
+    }) */
+  }
+  module.exports={
+    calDistance:calDistance
+  }
+</wxs>

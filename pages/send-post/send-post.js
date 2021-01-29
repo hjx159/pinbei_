@@ -358,6 +358,10 @@ Page({
             delTime: ""
           })
           console.log(myPost);
+          //帖子发送后，跳转到首页
+          wx.switchTab({
+            url: '../index/index',
+          })
         },
         fail:err=>{console.log("帖子数据未能发送到数据库中",err)}
       })

@@ -16,11 +16,11 @@
     我的资料
     <view class="iconfont icon-fa-right-copy"></view>
 </view>
-<view class="user_item">
+<view class="user_item" bindtap="handleTapmyPosts">
     我的帖子
     <view class="iconfont icon-fa-right-copy"></view>
 </view>
-<view class="user_item">
+<view class="user_item" >
     我的评论
     <view class="iconfont icon-fa-right-copy"></view>
 </view>
