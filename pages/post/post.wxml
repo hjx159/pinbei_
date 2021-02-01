@@ -29,7 +29,8 @@
             <view class="comment_user_name">{{item.user_name}}</view>
         </view>
         <view class="comment_content">{{item.comment_content}}</view>
-        <view class="comment_time">{{item.comment_time}}</view>
+        <!-- <view class="comment_time">{{item.comment_time}}</view> -->
+        <view class="comment_time">{{wxsTest.timeMinus(currentTime,item.comment_time)}}</view>
         <view class="comments_likes iconfont {{commentsIsLike[index]?'icon-dianzan-aixinshixin':'icon-empty'}}" bindtap="handleTapCommentsLike" data-index="{{index}}">
             <text decode>&nbsp;</text>
             {{item.likes_num}}

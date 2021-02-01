@@ -1,3 +1,4 @@
+//textVal
 Page({
   data: {
     // 用户个人信息
@@ -41,7 +42,8 @@ Page({
        // 文本域内容
        textVal: "" */
      },
-     currentTime:0
+     currentTime:0,
+     textVal:""
   },
 
   onShow: function (options) {
@@ -219,15 +221,26 @@ Page({
 
   // 评论
   handleComment() {
+    const time = Date.now()
+    this.setData({
+     currentTime:time
+   })
+
+
     let { post, MyInfo, textVal } = this.data;
+
+
     let MyComment = {
       comment_id: post.comments.comments_num,
       comment_content: textVal,
-      comment_time: "1秒钟前",
+
+      // comment_time: "1秒钟前",
+      comment_time:this.data.currentTime,
+
       user_name: MyInfo.nickName,
       user_icon: MyInfo.avatarUrl,
       likes_list: [],
-      likes_num: 0
+      likes_num: 0,
     }
     post.comments.comments_num++;
     post.comments.comments_list.push(MyComment);
@@ -236,6 +249,19 @@ Page({
       post,
       textVal
     });
+    wx.cloud.callFunction({
+      name:"updatePosts",
+      data:{
+        post_id:post.post_id,
+        post:this.data.post,
+      },
+      success:res=>{
+        console.log("发布评论后，更新数据库中的帖子信息成功！",res)
+      },
+      fail:err=>{
+        console.log("发布评论后，更新数据库中的帖子信息失败！",err)
+      }
+    })
   },
 
   // 点击私聊按钮
