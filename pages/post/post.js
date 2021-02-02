@@ -237,6 +237,7 @@ Page({
       // comment_time: "1秒钟前",
       comment_time:this.data.currentTime,
 
+      user_id:MyInfo.user_id,
       user_name: MyInfo.nickName,
       user_icon: MyInfo.avatarUrl,
       likes_list: [],

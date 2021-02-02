@@ -1,4 +1,5 @@
 {
+  "setting": {},
   "condition": {
     "plugin": {
       "list": []
@@ -14,6 +15,7 @@
         {
           "name": "test",
           "pathName": "pages/test/test",
+          "query": "",
           "scene": null
         },
         {
@@ -37,6 +39,18 @@
         {
           "name": "搜索",
           "pathName": "pages/search/search",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "我的评论",
+          "pathName": "pages/myComments/myComments",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "首页",
+          "pathName": "pages/index/index",
           "scene": null
         }
       ]
