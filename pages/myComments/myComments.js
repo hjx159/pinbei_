@@ -7,9 +7,16 @@ Page({
   data: {
     MyInfo: {},
     PostListOfMyComments:[],
+    currentTime:0,
   },
 
   onLoad(){
+    const time = Date.now()
+    this.setData({
+       currentTime:time
+    })
+
+    
     this.setData({
       // MyInfo:app.globalData.userInfo
       MyInfo:wx.getStorageSync('userInfo')

@@ -20,7 +20,7 @@
     我的帖子
     <view class="iconfont icon-fa-right-copy"></view>
 </view>
-<view class="user_item" >
+<view class="user_item" bindtap="handleTapMyComments">
     我的评论
     <view class="iconfont icon-fa-right-copy"></view>
 </view>

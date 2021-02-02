@@ -71,5 +71,10 @@ Page({
     wx.navigateTo({
       url: '/pages/myPosts/myPosts'
     });
-   }
+   },
+   handleTapMyComments(e){
+    wx.navigateTo({
+      url: '/pages/myComments/myComments'
+    });
+   },
 })
