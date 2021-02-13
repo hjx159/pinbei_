@@ -1,4 +1,4 @@
-let timeLimit = 1080000000//时间限度为300个小时
+let timeLimit = 10800000000//时间限度为3000个小时
 let numOfPostsOneTime = 5//上拉加载，每次5条
 let totalNum = 0//帖子总数（用于分页）
 let index = 0
@@ -12,7 +12,7 @@ var app = getApp()
 // var globalUserInfo = app.globalData.userInfo
 var storageUserInfo = wx.getStorageSync('userInfo')
 // app.globalData.userInfo
-// posts countPosts isLike swiperImgs len
+// posts countPosts isLike swiperImgs len position
 Page({
   data: {
     // tab栏数据
@@ -122,6 +122,10 @@ Page({
         })
         console.log(this.data.MyInfo)
         console.log(new Date().getTime())
+
+        
+        // this.onPullDownRefresh()
+
 
         const time = Date.now()
         this.setData({

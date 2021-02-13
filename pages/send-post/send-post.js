@@ -1,3 +1,4 @@
+const db = wx.cloud.database()
 Page({
   data: {
     // 用户个人信息
@@ -287,7 +288,12 @@ Page({
         publish_time:new Date().getTime(),
         // post_position: "",
         // position:要借助全局数据结构MyInfo,
-        position:this.data.MyInfo.position,
+        // position:this.data.MyInfo.position,
+        /* position:{
+          longitude:this.data.MyInfo.position.longitude,
+          latitude:this.data.MyInfo.position.latitude,
+        }, */
+        position:db.Geo.Point(this.data.MyInfo.position.longitude,this.data.MyInfo.position.latitude),
         user_id: this.data.MyInfo.user_id,
         user_name: this.data.MyInfo.nickName,
         user_icon: this.data.MyInfo.avatarUrl,

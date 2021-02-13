@@ -8,7 +8,7 @@ const _ = db.command
 
 // 云函数入口函数
 exports.main = async (event, context) => {
-  return await db.collection("testForSendPost").add({
+  return await db.collection("test1").add({
     data:event.myPost
   })
 }

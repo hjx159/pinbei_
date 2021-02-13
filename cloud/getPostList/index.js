@@ -14,6 +14,7 @@ exports.main = async (event, context) => {
     /* .where({
       publish_time:_.gt(event.timelimit)  //帖子发布时间晚于timelimit的才会显示
     }) */
+    // .orderBy('publish_time','desc')
     .where({
       publish_time:_.gt(event.timelimit),  //帖子发布时间晚于timelimit的才会显示
       position:_.geoNear({
@@ -21,6 +22,8 @@ exports.main = async (event, context) => {
         maxDistance:event.maxDistance
       })
     })
+    // .orderBy('publish_time','desc')
+    
     .skip(event.len)
     .limit(event.numOfPostsOneTime)
     .get({
